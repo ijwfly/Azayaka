@@ -254,6 +254,8 @@ struct Preferences: View {
                         }
                         Text("\"%t\" will be replaced with the recording's start time.")
                             .font(.subheadline).foregroundColor(Color.gray)
+                        Text("\"%w\" will be replaced with the window title being recorded.")
+                            .font(.subheadline).foregroundColor(Color.gray)
                     }.padding(10).frame(maxWidth: .infinity)
                 }.padding([.top, .leading, .trailing], 10)
                 GroupBox {
@@ -278,7 +280,9 @@ struct Preferences: View {
         }
 
         func getFileNameLength(_ fileName: String) -> Int {
-            return fileName.replacingOccurrences(of: "%t", with: dateFormatter.string(from: Date())).count
+            var result = fileName.replacingOccurrences(of: "%t", with: dateFormatter.string(from: Date()))
+            result = result.replacingOccurrences(of: "%w", with: "Window Title") // Используем примерное название окна для расчета длины
+            return result.count
         }
 
         func updateOutputDirectory() { // todo: re-sandbox?

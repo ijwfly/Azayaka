@@ -35,6 +35,22 @@
         }
       }
     },
+    "\"%w\" will be replaced with the window title being recorded." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%w” kommer att bytas ut mot titeln på fönstret som spelas in."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%w”会被替换为正在录制的窗口标题."
+          }
+        }
+      }
+    },
     "%lld" : {
       "shouldTranslate" : false
     },

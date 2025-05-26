@@ -213,6 +213,11 @@ extension AppDelegate {
             throw error
         }
     }
+    
+    func sanitizeFileName(_ fileName: String) -> String {
+        let invalidCharacters = CharacterSet(charactersIn: ":/\\?%*|\"<>")
+        return fileName.components(separatedBy: invalidCharacters).joined(separator: "_")
+    }
 
     func getFilePath() -> String {
         let dateFormatter = DateFormatter()
@@ -221,9 +226,22 @@ extension AppDelegate {
         if fileName == nil || fileName!.isEmpty {
             fileName = "Recording at %t".local
         }
-        // bit of a magic number but worst case ".flac" is 5 characters on top of this..
-        let fileNameWithDates = fileName!.replacingOccurrences(of: "%t", with: dateFormatter.string(from: Date())).prefix(Int(NAME_MAX) - 5)
-
+        
+        // Заменяем %t на текущую дату и время
+        var fileNameWithTemplates = fileName!.replacingOccurrences(of: "%t", with: dateFormatter.string(from: Date()))
+        
+        // Заменяем %w на название окна, если доступно
+        if streamType == .window && window != nil {
+            let windowTitle = sanitizeFileName(window!.title ?? "No title".local)
+            fileNameWithTemplates = fileNameWithTemplates.replacingOccurrences(of: "%w", with: windowTitle)
+        } else {
+            // Если это не запись окна или окно недоступно, заменяем на значение по умолчанию
+            fileNameWithTemplates = fileNameWithTemplates.replacingOccurrences(of: "%w", with: "Unknown Window".local)
+        }
+        
+        // Ограничиваем длину имени файла
+        let finalFileName = fileNameWithTemplates.prefix(Int(NAME_MAX) - 5)
+        
         let saveDirectory = ud.string(forKey: Preferences.kSaveDirectory)
         // ensure the destination folder exists
         do {
@@ -231,8 +249,8 @@ extension AppDelegate {
         } catch {
             print("Failed to create destination folder: ".local + error.localizedDescription)
         }
-
-        return saveDirectory! + "/" + fileNameWithDates
+        
+        return saveDirectory! + "/" + finalFileName
     }
 
     func getRecordingLength() -> String {
