@@ -186,4 +186,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, SCStreamDelegate, SCStreamOu
 
 extension String {
     var local: String { return NSLocalizedString(self, comment: "") }
+
+    /// Trims the string so that it fits within a file system's per-component limit.
+    /// `NAME_MAX` counts UTF-8 bytes rather than characters, so a non-ASCII window title
+    /// can blow past it long before it reaches NAME_MAX characters.
+    /// - Parameter reserved: bytes to keep free, e.g. for a file extension yet to be appended.
+    func truncatedToFileNameLimit(reservingBytes reserved: Int = 0) -> String {
+        let limit = max(Int(NAME_MAX) - reserved, 0)
+        var result = self
+        while result.utf8.count > limit && !result.isEmpty { result.removeLast() }
+        return result
+    }
 }

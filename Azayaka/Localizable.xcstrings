@@ -19,38 +19,6 @@
         }
       }
     },
-    "\"%t\" will be replaced with the recording's start time." : {
-      "localizations" : {
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "“%t” kommer att bytas ut mot inspelningens starttid."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\"%t\"会被替换为录音的开始时间."
-          }
-        }
-      }
-    },
-    "\"%w\" will be replaced with the window title being recorded." : {
-      "localizations" : {
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "“%w” kommer att bytas ut mot titeln på fönstret som spelas in."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "“%w”会被替换为正在录制的窗口标题."
-          }
-        }
-      }
-    },
     "%lld" : {
       "shouldTranslate" : false
     },
@@ -871,6 +839,24 @@
         }
       }
     },
+    "No window" : {
+      "comment" : "Stands in for %w in a file name when a display or system audio is being recorded",
+      "extractionState" : "manual",
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inget fönster"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无窗口"
+          }
+        }
+      }
+    },
     "None available" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1344,6 +1330,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "系统声音"
+          }
+        }
+      }
+    },
+    "the recording's start time" : {
+      "comment" : "Shown next to a file name placeholder, as in \"%t   the recording's start time\"",
+      "extractionState" : "manual",
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "inspelningens starttid"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录制开始时间"
+          }
+        }
+      }
+    },
+    "the title of the recorded window" : {
+      "comment" : "Shown next to a file name placeholder, as in \"%t   the recording's start time\"",
+      "extractionState" : "manual",
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "titeln på fönstret som spelas in"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在录制的窗口标题"
           }
         }
       }

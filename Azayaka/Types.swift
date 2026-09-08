@@ -28,6 +28,20 @@ enum StreamType: Int {
     case screen, window, systemaudio
 }
 
+/// Placeholders the user may put in the output file name, see `getFilePath()`.
+enum FileNameToken: String, CaseIterable {
+    case startTime   = "%t"
+    case windowTitle = "%w"
+
+    /// Short description shown next to the token in the preferences' file name legend.
+    var explanation: String {
+        switch self {
+            case .startTime:   return "the recording's start time".local
+            case .windowTitle: return "the title of the recorded window".local
+        }
+    }
+}
+
 struct GHRelease: Decodable {
     let tag_name: String
 }

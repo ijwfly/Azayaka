@@ -214,9 +214,23 @@ extension AppDelegate {
         }
     }
     
+    /// Strips characters which can't (or shouldn't) appear in a path component. "%" is in
+    /// there so that a window title can't smuggle in a placeholder of its own.
     func sanitizeFileName(_ fileName: String) -> String {
-        let invalidCharacters = CharacterSet(charactersIn: ":/\\?%*|\"<>")
-        return fileName.components(separatedBy: invalidCharacters).joined(separator: "_")
+        let invalidCharacters = CharacterSet(charactersIn: ":/\\?%*|\"<>").union(.controlCharacters)
+        let sanitized = fileName.components(separatedBy: invalidCharacters).joined(separator: "_")
+        // a leading dot would make the recording a hidden file
+        return sanitized.trimmingCharacters(in: .whitespacesAndNewlines.union(CharacterSet(charactersIn: ".")))
+    }
+
+    /// The title of the window being recorded, ready to be placed in a file name.
+    func windowTitleForFileName() -> String {
+        guard streamType == .window, let window = window else { return "No window".local }
+        let title = sanitizeFileName(window.title ?? "")
+        if !title.isEmpty { return title }
+        // some windows have no title at all, the menu falls back to the app's name for those too
+        let appName = sanitizeFileName(window.owningApplication?.applicationName ?? "")
+        return appName.isEmpty ? "No title".local : appName
     }
 
     func getFilePath() -> String {
@@ -226,22 +240,14 @@ extension AppDelegate {
         if fileName == nil || fileName!.isEmpty {
             fileName = "Recording at %t".local
         }
-        
-        // Заменяем %t на текущую дату и время
-        var fileNameWithTemplates = fileName!.replacingOccurrences(of: "%t", with: dateFormatter.string(from: Date()))
-        
-        // Заменяем %w на название окна, если доступно
-        if streamType == .window && window != nil {
-            let windowTitle = sanitizeFileName(window!.title ?? "No title".local)
-            fileNameWithTemplates = fileNameWithTemplates.replacingOccurrences(of: "%w", with: windowTitle)
-        } else {
-            // Если это не запись окна или окно недоступно, заменяем на значение по умолчанию
-            fileNameWithTemplates = fileNameWithTemplates.replacingOccurrences(of: "%w", with: "Unknown Window".local)
-        }
-        
-        // Ограничиваем длину имени файла
-        let finalFileName = fileNameWithTemplates.prefix(Int(NAME_MAX) - 5)
-        
+
+        let fileNameWithTokens = fileName!
+            .replacingOccurrences(of: FileNameToken.startTime.rawValue, with: dateFormatter.string(from: Date()))
+            .replacingOccurrences(of: FileNameToken.windowTitle.rawValue, with: windowTitleForFileName())
+
+        // bit of a magic number but worst case ".flac" is 5 characters on top of this..
+        let finalFileName = fileNameWithTokens.truncatedToFileNameLimit(reservingBytes: 5)
+
         let saveDirectory = ud.string(forKey: Preferences.kSaveDirectory)
         // ensure the destination folder exists
         do {
